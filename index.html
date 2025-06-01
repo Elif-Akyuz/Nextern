@@ -64,21 +64,7 @@
             transform: rotate(180deg);
         }
     </style>
-    <!-- Visualization & Content Choices: 
-        - Hero Section: Goal: Inform/Engage. Method: Large, bold text for report title and a brief introduction. Justification: Provides an immediate and impactful overview.
-        - Key Findings (KPIs): Goal: Inform/Engage. Method: Large, animated number cards for key stats. Interaction: Fade-in animation on scroll. Justification: Immediately grabs user attention with the most impactful findings.
-        - Investment Decisions Drivers (Chart): Goal: Compare. Method: Bar Chart (Chart.js) comparing 2023 vs 2024 investment drivers. Interaction: Tooltips on hover. Justification: Bar charts are ideal for direct comparison of categorical data and trends over time.
-        - Rise in Data Maturity (Chart): Goal: Show Change/Compare. Method: Bar Chart (Chart.js) comparing 2023 vs 2024 data maturity levels. Interaction: Tooltips on hover. Justification: Effectively visualizes the progress in data maturity.
-        - Unused Customer Insights (Stat Card): Goal: Inform. Method: Large percentage with descriptive text. Justification: Highlights a critical area for improvement.
-        - High-Performer Difference (Text Card): Goal: Inform. Method: Text block with key differentiators. Justification: Provides qualitative insights into successful strategies.
-        - Resilience and Security (Stat Cards): Goal: Inform. Method: Key percentages with explanatory text. Justification: Highlights critical concerns and adoption rates.
-        - Enterprise AI Maturity Levels (Chart): Goal: Show Proportions. Method: Doughnut Chart (Chart.js) for AI adoption stages. Interaction: Tooltips on hover. Justification: Clearly shows the distribution of organizations across AI maturity levels.
-        - Democratic Innovation (Text Card): Goal: Inform. Method: Text block. Justification: Explains the preferred approach to AI innovation.
-        - Trust and Quality Concern (Text Card): Goal: Inform. Method: Text block. Justification: Details the main barriers to AI scaling.
-        - "Black Box" Perception (Text Card): Goal: Inform. Method: Text block. Justification: Addresses ethical and perception challenges in AI.
-        - Key Recommendations (Accordion Cards): Goal: Organize/Inform. Method: Expandable cards for each recommendation. Interaction: Click to expand/collapse, revealing detailed content. Justification: Presents actionable advice in a digestible, user-controlled format.
-    -->
-</head>
+    </head>
 <body class="antialiased">
 
 <header id="header" class="bg-white/80 backdrop-blur-lg shadow-md sticky top-0 z-50">
@@ -99,6 +85,7 @@
                 <a href="#dayaniklilik" class="text-slate-600 hover:text-kpmg-purple transition-colors">Dayanıklılık</a>
                 <a href="#yapay-zeka" class="text-slate-600 hover:text-kpmg-purple transition-colors">Yapay Zeka</a>
                 <a href="#oneriler" class="text-slate-600 hover:text-kpmg-purple transition-colors">Öneriler</a>
+                <a href="index_eng.html" class="text-kpmg-purple border border-kpmg-purple px-3 py-1 rounded-md hover:bg-kpmg-purple hover:text-white transition-colors duration-300">English</a>
             </nav>
         </div>
     </div>
@@ -259,13 +246,23 @@
 
         // Helper function to wrap long labels for Chart.js
         const wrapLabel = (label, maxCharsPerLine) => {
+            if (Array.isArray(label)) { // If label is already an array, return as is
+                return label;
+            }
+            if (typeof label !== 'string') {
+                return label; // Not a string, return as is
+            }
+
             if (label.length <= maxCharsPerLine) {
                 return label;
             }
+
             const words = label.split(' ');
             let lines = [];
             let currentLine = '';
+
             words.forEach(word => {
+                // If adding the next word makes the line too long, push current line and start a new one
                 if ((currentLine + word).length > maxCharsPerLine && currentLine.length > 0) {
                     lines.push(currentLine.trim());
                     currentLine = word + ' ';
@@ -273,7 +270,8 @@
                     currentLine += word + ' ';
                 }
             });
-            lines.push(currentLine.trim());
+            lines.push(currentLine.trim()); // Add the last line
+
             return lines;
         };
         
