@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPMG Küresel Teknoloji Araştırması 2024 - İnteraktif Rapor</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+                max-height: 450px;
+            }
+        }
+        .kpmg-purple { color: #6D28D9; }
+        .kpmg-blue { color: #2563EB; }
+        .bg-kpmg-purple { background-color: #6D28D9; }
+        .border-kpmg-purple { border-color: #6D28D9; }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .accordion-content.expanded {
+            max-height: 9999px; /* Adjusted to allow full content to show */
+        }
+        .accordion-header svg {
+            transition: transform 0.3s ease-in-out;
+        }
+        .accordion-header.active svg {
+            transform: rotate(180deg);
+        }
+    </style>
+    <!-- Visualization & Content Choices: 
+        - Hero Section: Goal: Inform/Engage. Method: Large, bold text for report title and a brief introduction. Justification: Provides an immediate and impactful overview.
+        - Key Findings (KPIs): Goal: Inform/Engage. Method: Large, animated number cards for key stats. Interaction: Fade-in animation on scroll. Justification: Immediately grabs user attention with the most impactful findings.
+        - Investment Decisions Drivers (Chart): Goal: Compare. Method: Bar Chart (Chart.js) comparing 2023 vs 2024 investment drivers. Interaction: Tooltips on hover. Justification: Bar charts are ideal for direct comparison of categorical data and trends over time.
+        - Rise in Data Maturity (Chart): Goal: Show Change/Compare. Method: Bar Chart (Chart.js) comparing 2023 vs 2024 data maturity levels. Interaction: Tooltips on hover. Justification: Effectively visualizes the progress in data maturity.
+        - Unused Customer Insights (Stat Card): Goal: Inform. Method: Large percentage with descriptive text. Justification: Highlights a critical area for improvement.
+        - High-Performer Difference (Text Card): Goal: Inform. Method: Text block with key differentiators. Justification: Provides qualitative insights into successful strategies.
+        - Resilience and Security (Stat Cards): Goal: Inform. Method: Key percentages with explanatory text. Justification: Highlights critical concerns and adoption rates.
+        - Enterprise AI Maturity Levels (Chart): Goal: Show Proportions. Method: Doughnut Chart (Chart.js) for AI adoption stages. Interaction: Tooltips on hover. Justification: Clearly shows the distribution of organizations across AI maturity levels.
+        - Democratic Innovation (Text Card): Goal: Inform. Method: Text block. Justification: Explains the preferred approach to AI innovation.
+        - Trust and Quality Concern (Text Card): Goal: Inform. Method: Text block. Justification: Details the main barriers to AI scaling.
+        - "Black Box" Perception (Text Card): Goal: Inform. Method: Text block. Justification: Addresses ethical and perception challenges in AI.
+        - Key Recommendations (Accordion Cards): Goal: Organize/Inform. Method: Expandable cards for each recommendation. Interaction: Click to expand/collapse, revealing detailed content. Justification: Presents actionable advice in a digestible, user-controlled format.
+    -->
+</head>
+<body class="antialiased">
+
+<header id="header" class="bg-white/80 backdrop-blur-lg shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <div class="flex items-center space-x-4">
+                 <svg class="h-8 w-auto text-blue-600" viewBox="0 0 100 50" fill="currentColor">
+                    <path d="M0 0 H 15 V 50 H 0 V 0 Z"></path>
+                    <path d="M 50 0 L 25 50 L 37.5 50 L 62.5 0 H 50 Z"></path>
+                    <path d="M 60 12.5 L 75 50 L 87.5 50 L 72.5 12.5 H 60 Z"></path>
+                    <path d="M 70 0 L 85 37.5 L 97.5 37.5 L 82.5 0 H 70 Z"></path>
+                </svg>
+                <h1 class="text-xl font-bold text-slate-800 hidden sm:block">Teknoloji Araştırması 2024</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6 lg:space-x-8 items-center text-sm font-semibold">
+                <a href="#ana-bulgular" class="text-slate-600 hover:text-kpmg-purple transition-colors">Ana Bulgular</a>
+                <a href="#veri-optimizasyonu" class="text-slate-600 hover:text-kpmg-purple transition-colors">Veri ile Değer</a>
+                <a href="#dayaniklilik" class="text-slate-600 hover:text-kpmg-purple transition-colors">Dayanıklılık</a>
+                <a href="#yapay-zeka" class="text-slate-600 hover:text-kpmg-purple transition-colors">Yapay Zeka</a>
+                <a href="#oneriler" class="text-slate-600 hover:text-kpmg-purple transition-colors">Öneriler</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section id="hero" class="text-center py-16 fade-in">
+        <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight">
+            <span class="block">KPMG Küresel Teknoloji Araştırması 2024</span>
+            <span class="block kpmg-purple mt-2">Trendlerin Ötesinde: Hızı, Güvenliği ve Değeri Dengelemek</span>
+        </h2>
+        <p class="mt-6 max-w-3xl mx-auto text-lg text-slate-600">
+            Bu interaktif rapor, 2.450 teknoloji liderinin görüşleriyle dijital dönüşümün nabzını tutuyor. Kuruluşların teknoloji yatırımlarını nasıl şekillendirdiğini, yapay zekayı nasıl ölçeklendirdiğini ve geleceğe nasıl hazırlandığını keşfedin.
+        </p>
+    </section>
+
+    <section id="ana-bulgular" class="py-16 fade-in">
+        <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-slate-800">Ana Bulgular</h3>
+            <p class="mt-2 text-lg text-slate-600">Teknoloji yatırımları somut sonuçlara dönüşüyor.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <div class="text-5xl font-extrabold kpmg-purple">87%</div>
+                <p class="mt-2 text-md font-semibold text-slate-700">Teknoloji ile Kârlılık Artışı</p>
+                <p class="mt-1 text-sm text-slate-500">Son 24 ayda kârlılığını artıran kuruluşların oranı.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                 <div class="text-5xl font-extrabold kpmg-purple">89%</div>
+                <p class="mt-2 text-md font-semibold text-slate-700">Danışmanlığa Güven</p>
+                <p class="mt-1 text-sm text-slate-500">Yatırım kararında 3. taraf danışmanlığını önceliklendirenlerin oranı.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <div class="text-5xl font-extrabold kpmg-purple">74%</div>
+                <p class="mt-2 text-md font-semibold text-slate-700">Yeni Teknoloji Odaklılık</p>
+                <p class="mt-1 text-sm text-slate-500">Mevcut sistemleri iyileştirmek yerine yeni teknolojiye yatırım planlayanların oranı.</p>
+            </div>
+        </div>
+        
+        <div class="mt-16 bg-white p-8 rounded-xl shadow-lg border border-slate-200 fade-in">
+             <h4 class="text-2xl font-bold text-slate-800 text-center mb-6">Yatırım Kararlarını Şekillendiren Faktörler (2023 vs 2024)</h4>
+             <div class="chart-container">
+                <canvas id="investmentDriversChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section id="veri-optimizasyonu" class="py-16 fade-in">
+        <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-slate-800">Veri ile Değer Yaratmak</h3>
+            <p class="mt-2 text-lg text-slate-600">Veri olgunluğu artıyor ancak potansiyel tam kullanılmıyor.</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+             <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <h4 class="text-2xl font-bold text-slate-800 text-center mb-6">Veri Olgunluğunda Yükseliş (2023 vs 2024)</h4>
+                <p class="text-center text-slate-600 mb-6">Kuruluşların en üst iki veri olgunluğu seviyesindeki (Etkili/İçselleşmiş) oranı.</p>
+                <div class="chart-container" style="height: 400px; max-height:450px;">
+                    <canvas id="dataMaturityChart"></canvas>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-red-200">
+                     <div class="text-5xl font-extrabold text-red-600">78%</div>
+                    <p class="mt-2 text-md font-semibold text-slate-700">Kullanılmayan Müşteri İçgörüleri</p>
+                    <p class="mt-1 text-sm text-slate-500">Kuruluşlarının müşteri geri bildirimlerini etkili kullanamadığını düşünen yöneticilerin oranı.</p>
+                </div>
+                 <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <h4 class="text-xl font-bold text-slate-800 mb-2">Yüksek Performans Farkı</h4>
+                    <p class="text-sm text-slate-600">Lider kuruluşlar, pazar değişimlerine uyum sağlamak için değer izleme metriklerini %10 daha sık gözden geçiriyor ve uzun vadeli hedeflerle uyum sağlamaya %12 daha fazla önem veriyor.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dayaniklilik" class="py-16 fade-in">
+         <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-slate-800">Dayanıklılık ve Güvenlik</h3>
+            <p class="mt-2 text-lg text-slate-600">Siber güvenlik en büyük endişe, teknik borç ise gizli bir tehdit.</p>
+        </div>
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+             <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Siber Güvenlik İkilemi</h4>
+                <p class="text-slate-600 mb-4"><strong class="kpmg-purple">72%</strong> oranında "Tasarım İtibarıyla Güvenlik" benimseniyor, ancak yöneticilerin <strong class="kpmg-purple">78%'i</strong> çalışan eğitimlerinin yetersiz olduğunu düşünüyor. Bu durum, teknik önlemlerle insan faktörü arasındaki uyumsuzluğu gösteriyor.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Teknik Borcun Etkisi</h4>
+                <p class="text-slate-600 mb-4">Kuruluşların <strong class="kpmg-purple">57%'si</strong>, temel BT sistemlerindeki hataların iş sürekliliğini <strong class="kpmg-purple">haftalık olarak</strong> aksattığını belirtiyor. Bu, inovasyonun önündeki en büyük engellerden biridir.</p>
+            </div>
+         </div>
+    </section>
+
+    <section id="yapay-zeka" class="py-16 fade-in">
+        <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-slate-800">Yapay Zekayı Güvenle Ölçeklendirmek</h3>
+            <p class="mt-2 text-lg text-slate-600">Potansiyel büyük, ancak ölçeklendirme ve güven en önemli zorluklar.</p>
+        </div>
+         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div class="lg:col-span-3 bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <h4 class="text-2xl font-bold text-slate-800 text-center mb-6">Kurumsal Yapay Zeka Olgunluk Seviyeleri</h4>
+                <div class="chart-container">
+                    <canvas id="aiMaturityChart"></canvas>
+                </div>
+            </div>
+            <div class="lg:col-span-2 space-y-4">
+                 <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800">Demokratik İnovasyon</h5>
+                    <p class="text-sm text-slate-600">En popüler yaklaşım (%40), farklı departmanlardan çalışanların yer aldığı mükemmeliyet merkezleri (CoE) ile açık iş birliği kurmak.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800">Güven ve Kalite Endişesi</h5>
+                    <p class="text-sm text-slate-600">AI modellerini üretime taşımadaki en büyük engel; güvenilirlik, kalite ve güvenlik endişeleri.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h5 class="font-bold text-slate-800">"Kara Kutu" Algısı</h5>
+                    <p class="text-sm text-slate-600">%78'i, kullanıcıların AI'ı bir 'kara kutu' olarak görmesinden, %77'si ise etik kaygılardan endişe duyuyor.</p>
+                </div>
+            </div>
+         </div>
+    </section>
+
+    <section id="oneriler" class="py-16 fade-in">
+         <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-slate-800">Başarılı Dijital Dönüşümün Formülü</h3>
+            <p class="mt-2 text-lg text-slate-600">Stratejik ve eyleme geçirilebilir öneriler.</p>
+        </div>
+        <div class="space-y-4 max-w-4xl mx-auto" id="recommendations-container">
+        </div>
+    </section>
+</main>
+
+<footer class="bg-slate-800 text-white mt-16">
+    <div class="container mx-auto px-8 py-8 text-center text-sm">
+        <p>&copy; 2024 KPMG Küresel Teknoloji Araştırması İnteraktif Raporu. Tüm hakları saklıdır.</p>
+        <p class="text-slate-400 mt-2">Bu rapor, KPMG'nin orijinal araştırmasından elde edilen verilerle oluşturulmuştur.</p>
+    </div>
+</footer>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+        
+        const createChart = (ctx, config) => {
+            if (ctx) {
+                new Chart(ctx, config);
+            }
+        };
+
+        // Helper function to wrap long labels for Chart.js
+        const wrapLabel = (label, maxCharsPerLine) => {
+            if (label.length <= maxCharsPerLine) {
+                return label;
+            }
+            const words = label.split(' ');
+            let lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > maxCharsPerLine && currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            });
+            lines.push(currentLine.trim());
+            return lines;
+        };
+        
+        const investmentDriversCtx = document.getElementById('investmentDriversChart')?.getContext('2d');
+        const investmentDriversConfig = {
+            type: 'bar',
+            data: {
+                labels: ['3. Taraf Danışmanlığı', 'Şirket İçi Geliştirme/PoC', ['Rakipleri', 'Takip Etme'], 'Kanıtlanmış ROI'],
+                datasets: [
+                    {
+                        label: '2024',
+                        data: [89, 83, 82, 73],
+                        backgroundColor: 'rgba(109, 40, 217, 0.7)',
+                        borderColor: 'rgba(109, 40, 217, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '2023',
+                        data: [63, 56, 73, 52],
+                        backgroundColor: 'rgba(107, 114, 128, 0.5)',
+                        borderColor: 'rgba(107, 114, 128, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%'
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: { size: 12, family: 'Inter' },
+                            callback: function(value, index, values) {
+                                const label = this.getLabelForValue(value);
+                                return wrapLabel(label, 20); // Apply wrapping to Y-axis labels
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        createChart(investmentDriversCtx, investmentDriversConfig);
+
+        const dataMaturityCtx = document.getElementById('dataMaturityChart')?.getContext('2d');
+        const dataMaturityConfig = {
+            type: 'bar',
+            data: {
+                labels: ['Veri Güvenliği', 'Veri Yönetimi', 'Veri Erişilebilirliği', 'Anlamlı Öngörüler', 'Veri Kültürü'],
+                datasets: [
+                    {
+                        label: '2024',
+                        data: [52, 51, 53, 52, 51],
+                        backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 1
+                    },
+                     {
+                        label: '2023',
+                        data: [38, 37, 39, 38, 41],
+                        backgroundColor: 'rgba(107, 114, 128, 0.5)',
+                        borderColor: 'rgba(107, 114, 128, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+             options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 70,
+                         ticks: {
+                            callback: function(value) {
+                                return value + '%'
+                            }
+                        }
+                    },
+                     x: {
+                        ticks: {
+                            font: { size: 12, family: 'Inter' },
+                            callback: function(value, index, values) {
+                                const label = this.getLabelForValue(value);
+                                return wrapLabel(label, 20); // Apply wrapping to X-axis labels
+                            }
+                        }
+                    }
+                },
+                 plugins: {
+                    legend: { position: 'top' },
+                     tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        createChart(dataMaturityCtx, dataMaturityConfig);
+        
+        const aiMaturityCtx = document.getElementById('aiMaturityChart')?.getContext('2d');
+        const aiMaturityConfig = {
+            type: 'doughnut',
+            data: {
+                labels: ['Ölçeklendiriyoruz', 'Stratejik Yatırım', 'Test Ediyoruz', 'Erken Aşama', 'Başlamadık'],
+                datasets: [{
+                    label: 'Kurumsal Yapay Zeka Olgunluğu',
+                    data: [31, 43, 19, 6, 1],
+                    backgroundColor: [
+                        'rgba(109, 40, 217, 0.9)',
+                        'rgba(37, 99, 235, 0.8)',
+                        'rgba(2, 132, 199, 0.7)',
+                        'rgba(107, 114, 128, 0.6)',
+                        'rgba(209, 213, 219, 0.5)'
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                             padding: 15,
+                             boxWidth: 12
+                        }
+                    },
+                     tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        createChart(aiMaturityCtx, aiMaturityConfig);
+
+        const recommendations = [
+            { title: "1. Geride Kalma Korkusunu (FOMO) Yenmek", content: "Kararlarınızı, kuruluşunuzun stratejik hedefleri ve somut kanıtlara dayandırın. Sürüyü körü körüne takip etmek yerine, özgün değer yaratmaya odaklanın." },
+            { title: "2. Değeri Ampirik Bir Yaklaşımla Tanımlamak", content: "Başarıyı net ölçütlerle tanımlayın, paydaşları hizalayın ve performansı sürekli izleyerek iç ve dış değişikliklere göre ayarlamalar yapın." },
+            { title: "3. Teknik Borcu Azaltmak", content: "Yapılandırılmış teknik borç yönetimini benimseyin. Teknoloji ortamını kontrol altına almak ve rasyonelleştirmek için net iyileştirme planları ve sağlam mimari ilkeleri oluşturun." },
+            { title: "4. İş Birliğinin Gücünden Yararlanmak", content: "Güvenilir iş ortaklarıyla iş birliği yapmanın, ortak yatırım yapmanın ve riski paylaşmanın yeni yollarını keşfedin. En son teknolojiye ve küresel fikirlere erişim için bağlantılarınızı kullanın." },
+            { title: "5. Güven ve Güvenliği Önceliklendirmek", content: "Çözümlerin 'tasarım itibarıyla güvenli' olmasını sağlayın. Yapay zeka ve yeni teknolojileri sorumlu ve etik bir şekilde tasarlayın, inşa edin ve kullanın. Siber güvenlik kültürünü güçlendirin." },
+            { title: "6. Güçlü Bir Veri Altyapısı Kurmak", content: "Verilerin güvenilir, alakalı ve uygun şekilde kullanılmasını sağlayan; insanları, süreçleri ve politikaları birleştiren sağlam bir veri yönetim çerçevesi oluşturun." },
+            { title: "7. Bilgi Paylaşımıyla Yapay Zeka Yetkinliklerini Geliştirmek", content: "İş gücünüzün yapay zeka konusundaki yetkinliğini ve eğilimlerini değerlendirin. Bilgi boşluklarını kapatmak, sürekli öğrenmeyi kolaylaştırmak ve fonksiyonlar arası iş birliğini teşvik etmek için en iyi yolu belirleyin." }
+        ];
+        
+        const recContainer = document.getElementById('recommendations-container');
+        if (recContainer) {
+            recommendations.forEach(rec => {
+                const div = document.createElement('div');
+                div.className = 'bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden';
+                div.innerHTML = `
+                    <div class="p-4 cursor-pointer flex justify-between items-center transition hover:bg-slate-50 accordion-header">
+                        <h4 class="text-lg font-semibold text-slate-800">${rec.title}</h4>
+                        <svg class="w-5 h-5 text-slate-500 transition-transform transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="px-4 pb-4 text-slate-600 accordion-content">
+                        <p>${rec.content}</p>
+                    </div>
+                `;
+                recContainer.appendChild(div);
+                
+                const header = div.querySelector('.accordion-header');
+                const content = div.querySelector('.accordion-content');
+
+                header.addEventListener('click', () => {
+                    const isActive = header.classList.contains('active');
+                    if (isActive) {
+                        content.style.maxHeight = '0';
+                        header.classList.remove('active');
+                        content.classList.remove('expanded');
+                    } else {
+                        // Close other open accordions
+                        document.querySelectorAll('.accordion-header.active').forEach(activeHeader => {
+                            activeHeader.classList.remove('active');
+                            activeHeader.nextElementSibling.classList.remove('expanded');
+                            activeHeader.nextElementSibling.style.maxHeight = '0';
+                        });
+
+                        header.classList.add('active');
+                        content.classList.add('expanded');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
